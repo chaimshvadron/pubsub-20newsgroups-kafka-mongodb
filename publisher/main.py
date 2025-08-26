@@ -1,7 +1,7 @@
 from fastapi import FastAPI
-from data_loader import load_messages
-from category_selector import select_one_per_category
-from producer import send_messages, TOPICS
+from publisher.data_loader import load_messages
+from publisher.category_selector import select_one_per_category
+from publisher.producer import send_messages, TOPICS
 
 app = FastAPI()
 

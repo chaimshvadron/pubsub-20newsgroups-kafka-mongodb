@@ -15,7 +15,9 @@ services:
       - pubsubnet
 
   publisher:
-    build: ./publisher
+    build:
+      context: .
+      dockerfile: publisher/Dockerfile
     ports:
       - "8001:8000"
     depends_on:
@@ -24,7 +26,9 @@ services:
       - pubsubnet
 
   subscriber_interesting:
-    build: ./subscriber_interesting
+    build:
+      context: .
+      dockerfile: subscriber_interesting/Dockerfile
     ports:
       - "8002:8000"
     depends_on:
@@ -34,7 +38,9 @@ services:
       - pubsubnet
 
   subscriber_not_interesting:
-    build: ./subscriber_not_interesting
+    build:
+      context: .
+      dockerfile: subscriber_not_interesting/Dockerfile
     ports:
       - "8003:8000"
     depends_on:

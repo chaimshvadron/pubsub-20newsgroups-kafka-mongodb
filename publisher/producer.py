@@ -1,4 +1,4 @@
-from kafka_configurations import get_producer_config
+from publisher.kafka_configurations import get_producer_config
 
 TOPICS = {
     "interesting": "interesting",

@@ -8,7 +8,7 @@ import threading
 
 app = FastAPI()
 
-KAFKA_SERVERS = os.getenv("KAFKA_SERVERS", "localhost:9092")
+KAFKA_SERVERS = os.getenv("KAFKA_SERVERS", "kafka:9092")
 TOPIC = "not_interesting"
 COLLECTION_NAME = "not_interesting"
 

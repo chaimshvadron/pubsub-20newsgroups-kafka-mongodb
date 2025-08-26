@@ -1,4 +1,4 @@
-from subscriber_not_interesting.mongo import MongoDBConnection
+from .mongo import MongoDBConnection
 from .dal import MongoDAL
     
 class MongoManager:
