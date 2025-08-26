@@ -1,38 +1,33 @@
 from fastapi import FastAPI
-from kafka import KafkaProducer
-import json
-import os
-import random
-
+from data_loader import load_messages
+from category_selector import select_one_per_category
+from producer import send_messages, TOPICS
 
 app = FastAPI()
 
-KAFKA_SERVERS = os.getenv("KAFKA_SERVERS", "localhost:9092")
-TOPICS = {
-    "interesting": "interesting",
-    "not_interesting": "not_interesting"
-}
-
-producer = KafkaProducer(
-    bootstrap_servers=KAFKA_SERVERS,
-    value_serializer=lambda v: json.dumps(v).encode('utf-8')
-)
-
-def load_messages(file_path):
-    with open(file_path, "r", encoding="utf-8") as f:
-        return json.load(f)
+interesting_categories = [
+    'alt.atheism', 'comp.graphics', 'comp.os.ms-windows.misc', 'comp.sys.ibm.pc.hardware',
+    'comp.sys.mac.hardware', 'comp.windows.x', 'misc.forsale', 'rec.autos',
+    'rec.motorcycles', 'rec.sport.baseball'
+]
+not_interesting_categories = [
+    'rec.sport.hockey', 'sci.crypt', 'sci.electronics', 'sci.med', 'sci.space',
+    'soc.religion.christian', 'talk.politics.guns', 'talk.politics.mideast',
+    'talk.politics.misc', 'talk.religion.misc'
+]
 
 @app.get("/publish")
 def publish_messages():
-    interesting_msgs = load_messages("../data/newsgroups_interesting.json")
-    not_interesting_msgs = load_messages("../data/newsgroups_not_interesting.json")
-    selected_interesting = random.sample(interesting_msgs, 20)
-    selected_not_interesting = random.sample(not_interesting_msgs, 20)
+    interesting_msgs = load_messages("data/newsgroups_interesting.json")
+    not_interesting_msgs = load_messages("data/newsgroups_not_interesting.json")
+    selected_interesting = select_one_per_category(interesting_msgs, interesting_categories)
+    selected_not_interesting = select_one_per_category(not_interesting_msgs, not_interesting_categories)
 
-    for msg in selected_interesting:
-        producer.send(TOPICS["interesting"], msg)
-    for msg in selected_not_interesting:
-        producer.send(TOPICS["not_interesting"], msg)
+    send_messages(TOPICS["interesting"], selected_interesting)
+    send_messages(TOPICS["not_interesting"], selected_not_interesting)
 
-    producer.flush()
-    return {"status": "published", "count_interesting": len(selected_interesting), "count_not_interesting": len(selected_not_interesting)}
+    return {
+        "status": "published",
+        "count_interesting": len(selected_interesting),
+        "count_not_interesting": len(selected_not_interesting)
+    }
