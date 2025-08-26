@@ -3,7 +3,7 @@ from kafka import KafkaConsumer
 import json
 import os
 from datetime import datetime
-from manager import MongoManager
+from .manager import MongoManager
 import threading
 
 app = FastAPI()

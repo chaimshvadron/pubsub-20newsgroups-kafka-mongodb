@@ -7,7 +7,7 @@ load_dotenv(dotenv_path)
 
 class MongoDBConnection:
     def __init__(self):
-        self.connection_string = os.getenv("MONGO_URI", "mongodb://localhost:27017/")
+        self.connection_string = os.getenv("MONGO_URI", "mongodb://localhost:27015/")
         self.db_name = os.getenv("MONGODB_DBNAME", "newsgroups")
         self.client = None
         self.db = None

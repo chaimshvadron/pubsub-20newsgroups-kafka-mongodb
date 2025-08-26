@@ -1,5 +1,5 @@
-from subscriber_interesting.mongo import MongoDBConnection
-from dal import MongoDAL
+from subscriber_not_interesting.mongo import MongoDBConnection
+from .dal import MongoDAL
     
 class MongoManager:
     def __init__(self):
