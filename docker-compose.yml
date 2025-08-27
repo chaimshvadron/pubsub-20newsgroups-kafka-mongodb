@@ -1,0 +1,54 @@
+version: '3.8'
+services:
+  mongo:
+    image: mongodb/mongodb-community-server:latest
+    ports:
+      - "27017:27017"
+    networks:
+      - pubsubnet
+
+  kafka:
+    image: apache/kafka:latest
+    ports:
+      - "9092:9092"
+    networks:
+      - pubsubnet
+
+  publisher:
+    build:
+      context: .
+      dockerfile: publisher/Dockerfile
+    ports:
+      - "8001:8000"
+    depends_on:
+      - kafka
+    networks:
+      - pubsubnet
+
+  subscriber_interesting:
+    build:
+      context: .
+      dockerfile: subscriber_interesting/Dockerfile
+    ports:
+      - "8002:8000"
+    depends_on:
+      - kafka
+      - mongo
+    networks:
+      - pubsubnet
+
+  subscriber_not_interesting:
+    build:
+      context: .
+      dockerfile: subscriber_not_interesting/Dockerfile
+    ports:
+      - "8003:8000"
+    depends_on:
+      - kafka
+      - mongo
+    networks:
+      - pubsubnet
+
+networks:
+  pubsubnet:
+    driver: bridge
